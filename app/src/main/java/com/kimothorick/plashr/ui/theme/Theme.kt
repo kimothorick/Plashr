@@ -94,15 +94,13 @@ private val darkScheme = darkColorScheme(
 @Composable
 fun PlashrTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true, content: @Composable () -> Unit
+    dynamicColor: Boolean = false, content: @Composable () -> Unit
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> darkScheme
         else -> lightScheme
     }
@@ -111,8 +109,10 @@ fun PlashrTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = colorScheme.background.toArgb()
+            if (!darkTheme)
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                    true
         }
     }
 
