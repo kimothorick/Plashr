@@ -108,7 +108,6 @@ fun AppInfoScreen(navController: NavHostController, context: Context) {
 
     Scaffold(topBar = {
         LargeTopAppBar(modifier = Modifier.wrapContentHeight(),
-
             title = { Text(text = "App Info ") }, navigationIcon = {
                 IconButton(onClick = {
                     navController.popBackStack()
