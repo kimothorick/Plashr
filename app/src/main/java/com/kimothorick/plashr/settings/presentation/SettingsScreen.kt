@@ -26,6 +26,8 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -59,7 +62,9 @@ import com.kimothorick.plashr.settings.presentation.components.SettingsCategory
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController, settingsViewModel: SettingsViewModel) {
-    var showDialog by remember {mutableStateOf<SettingDialogData?>(null)}
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    var showDialog by remember { mutableStateOf<SettingDialogData?>(null) }
     var selectedTheme by remember {
         mutableStateOf("")
     }
@@ -70,22 +75,22 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
         mutableStateOf("")
     }
     LaunchedEffect(Unit) {
-        settingsViewModel.appTheme.collect {theme ->
+        settingsViewModel.appTheme.collect { theme ->
             selectedTheme = theme
         }
     }
     LaunchedEffect(Unit) {
-        settingsViewModel.photoLayout.collect {layout ->
+        settingsViewModel.photoLayout.collect { layout ->
             selectedLayout = layout
         }
     }
     LaunchedEffect(Unit) {
-        settingsViewModel.downloadQuality.collect {downloadQuality ->
+        settingsViewModel.downloadQuality.collect { downloadQuality ->
             selectedDownloadQuality = downloadQuality
         }
     }
     // Centralized function to handle setting clicks
-    val handleSettingClick: (SettingOption) -> Unit = {option ->
+    val handleSettingClick: (SettingOption) -> Unit = { option ->
         when (option.action) {
             SettingAction.OpenThemeDialog -> {
                 val themeOptions = SettingsDataStore.themeOptions
@@ -93,7 +98,7 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
                 showDialog = SettingDialogData(title = "Choose app theme",
                     options = themeOptions,
                     initialSelectedIndex = currentThemeIndex,
-                    onOptionSelected = {selectedIndex ->
+                    onOptionSelected = { selectedIndex ->
                         settingsViewModel.setAppTheme(themeOptions[selectedIndex])
                     })
             }
@@ -104,7 +109,7 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
                 showDialog = SettingDialogData(title = "Photo layout",
                     options = layoutOptions,
                     initialSelectedIndex = currentLayoutIndex,
-                    onOptionSelected = {selectedIndex ->
+                    onOptionSelected = { selectedIndex ->
                         settingsViewModel.setPhotoLayout(layoutOptions[selectedIndex])
                     })
             }
@@ -116,7 +121,7 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
                 showDialog = SettingDialogData(title = "Download quality",
                     options = downloadQualityOptions,
                     initialSelectedIndex = currentDownloadQualityIndex,
-                    onOptionSelected = {selectedIndex ->
+                    onOptionSelected = { selectedIndex ->
                         settingsViewModel.setDownloadQuality(downloadQualityOptions[selectedIndex])
                     })
             }
@@ -189,6 +194,7 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
         // Top app bar with title and back navigation
         LargeTopAppBar(title = {
             Text(text = "Settings")
+
         }, navigationIcon = {
             IconButton(onClick = {
                 navController.popBackStack()
@@ -198,23 +204,30 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
                     contentDescription = "Back arrow"
                 )
             }
-        })
-    }) {innerPadding ->
+        }, scrollBehavior = scrollBehavior, colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+            scrolledContainerColor = MaterialTheme.colorScheme.surface
+        )
+        )
+    }) { innerPadding ->
         // LazyColumn to display setting categories
         LazyColumn(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
-            items(settingCategories) {category ->
+            items(settingCategories) { category ->
                 SettingsCategory(category = category, handleSettingClick)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
 // Show option dialog if showDialog state is not null
-    showDialog?.let {dialogData ->
+    showDialog?.let { dialogData ->
         OptionsDialog(title = dialogData.title,
             options = dialogData.options,
-            onOptionSelected = {selectedIndex ->
+            onOptionSelected = { selectedIndex ->
                 dialogData.onOptionSelected(selectedIndex)
             },
             initialSelectedIndex = dialogData.initialSelectedIndex,
@@ -224,7 +237,7 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
                 showDialog = null
                 // Hide dialog after confirmation
             },
-            onDismissRequest = {showDialog = null} // Close on dismiss
+            onDismissRequest = { showDialog = null } // Close on dismiss
         )
     }
 }
@@ -249,7 +262,7 @@ fun OptionsDialog(
     onConfirmation: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    var selectedIndex by remember {mutableStateOf(initialSelectedIndex)}
+    var selectedIndex by remember { mutableStateOf(initialSelectedIndex) }
     AlertDialog(onDismissRequest = onDismissRequest, title = {
         Text(
             text = title,
@@ -259,7 +272,7 @@ fun OptionsDialog(
         )
     }, text = {
         Column {
-            options.forEachIndexed {index, option ->
+            options.forEachIndexed { index, option ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -268,7 +281,7 @@ fun OptionsDialog(
                         }, verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(selected = selectedIndex == index,
-                        onClick = {selectedIndex = index})
+                        onClick = { selectedIndex = index })
                     Text(
                         text = option,
                         style = MaterialTheme.typography.bodyLarge,

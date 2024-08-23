@@ -1,7 +1,6 @@
 package com.kimothorick.plashr.settings.presentation
 
 import android.content.Context
-import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -18,22 +17,22 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.kimothorick.plashr.R
 import com.kimothorick.plashr.settings.data.SettingAction
 import com.kimothorick.plashr.settings.data.SettingCategory
 import com.kimothorick.plashr.settings.data.SettingOption
 import com.kimothorick.plashr.settings.presentation.components.SettingsCategory
-import com.kimothorick.plashr.ui.theme.PlashrTheme
 import com.kimothorick.plashr.utils.OpenLink
 
 /**
@@ -49,6 +48,8 @@ import com.kimothorick.plashr.utils.OpenLink
 @Composable
 fun AppInfoScreen(navController: NavHostController, context: Context) {
     val rickInstagramURL = stringResource(id = R.string.rick_instagram_handle)
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     val appInfoCategories = listOf(
         SettingCategory(
@@ -94,7 +95,7 @@ fun AppInfoScreen(navController: NavHostController, context: Context) {
         )
     )
     // Centralized function to handle setting clicks
-    val handleSettingClick: (SettingOption) -> Unit = {option ->
+    val handleSettingClick: (SettingOption) -> Unit = { option ->
         when (option.action) {
             SettingAction.OpenInstagram -> {
                 Log.i("AppInfoScreen", "AppInfoScreen: Instagram icon clicked")
@@ -107,8 +108,8 @@ fun AppInfoScreen(navController: NavHostController, context: Context) {
 
     Scaffold(topBar = {
         LargeTopAppBar(modifier = Modifier.wrapContentHeight(),
-            title = {Text(text = "App Info ")},
-            navigationIcon = {
+
+            title = { Text(text = "App Info ") }, navigationIcon = {
                 IconButton(onClick = {
                     navController.popBackStack()
                 }) {
@@ -117,10 +118,20 @@ fun AppInfoScreen(navController: NavHostController, context: Context) {
                         contentDescription = "Back arrow"
                     )
                 }
-            })
-    }) {innerPadding ->
-        LazyColumn(contentPadding = innerPadding, modifier = Modifier.padding(top = 24.dp)) {
-            items(appInfoCategories) {category ->
+            }, scrollBehavior = scrollBehavior, colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.primary,
+                scrolledContainerColor = MaterialTheme.colorScheme.surface
+            )
+        )
+    }) { innerPadding ->
+        LazyColumn(
+            contentPadding = innerPadding,
+            modifier = Modifier
+                .padding(top = 24.dp)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+        ) {
+            items(appInfoCategories) { category ->
                 SettingsCategory(category = category, handleSettingClick)
                 Spacer(modifier = Modifier.height(16.dp))
             }
