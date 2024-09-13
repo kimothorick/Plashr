@@ -1,4 +1,4 @@
-package com.kimothorick.plashr
+package com.kimothorick.plashr.di
 
 import android.content.Context
 import com.kimothorick.plashr.profile.domain.ProfileDataStore

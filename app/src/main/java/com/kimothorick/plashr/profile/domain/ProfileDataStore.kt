@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,6 +16,8 @@ import javax.inject.Singleton
  *
  * This class leverages the Preferences DataStore to store key-value pairs.
  * It is designed to be injected using a dependency injection framework.
+ *
+ * @param context The application context.
  */
 @Singleton
 class ProfileDataStore @Inject constructor(val context: Context) {
@@ -137,5 +140,53 @@ class ProfileDataStore @Inject constructor(val context: Context) {
         context.dataStore.edit {preferences ->
             preferences[ACCESS_TOKEN] = accessToken
         }
+    }
+
+    /**
+     * Stores all user details in the DataStore.
+     *
+     * This function saves the provided user information (userId, username, firstName, lastName, profilePictureUrl)
+     * to the DataStore using keys defined as [USER_ID], [USERNAME], [FIRST_NAME], [LAST_NAME], and [PROFILE_PICTURE_URL].
+     *
+     * @param userId The ID of the user.
+     * @param username The username ofthe user.
+     * @param firstName The first name of the user.
+     * @param lastName The last name of the user.
+     * @param profilePictureUrl The URL of the user's profile picture.
+     */
+    suspend fun setAllUserDetails(
+        userId: String,
+        username: String,
+        firstName: String,
+        lastName: String,
+        profilePictureUrl: String,
+    ){
+        context.dataStore.edit {preferences ->
+            preferences[USER_ID] = userId
+            preferences[USERNAME] = username
+            preferences[FIRST_NAME] = firstName
+            preferences[LAST_NAME] = lastName
+            preferences[PROFILE_PICTURE_URL] = profilePictureUrl
+        }
+    }
+
+    /**
+     * Clears all data from the DataStore.
+     *
+     * This function removes all key-value pairs stored in the profile DataStore,
+     * effectively resetting it to an empty state.
+     */
+    suspend fun clearDataStore() {
+        context.dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
+
+    /**
+     * Flow to observe changes to the authorization status.
+     * Emits true if an access token is present, false otherwise.
+     */
+    val isAppAuthorized: Flow<Boolean> = accessTokenFlow.map {accessToken ->
+        accessToken.isNotEmpty()
     }
 }

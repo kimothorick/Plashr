@@ -1,7 +1,6 @@
 package com.kimothorick.plashr.settings.presentation
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -98,8 +97,7 @@ fun AppInfoScreen(navController: NavHostController, context: Context) {
     val handleSettingClick: (SettingOption) -> Unit = { option ->
         when (option.action) {
             SettingAction.OpenInstagram -> {
-                Log.i("AppInfoScreen", "AppInfoScreen: Instagram icon clicked")
-                OpenLink(url = rickInstagramURL, context = context)
+                 OpenLink(url = rickInstagramURL, context = context)
             }
 
             else -> {}

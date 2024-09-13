@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.kimothorick.plashr.collections.presentation.CollectionsScreen
 import com.kimothorick.plashr.home.presentation.HomeScreen
+import com.kimothorick.plashr.profile.domain.ProfileViewModel
 import com.kimothorick.plashr.profile.presentation.components.ProfileComponents
 import com.kimothorick.plashr.search.presentation.SearchScreen
 import com.kimothorick.plashr.ui.PlashrMainScreenLargeTopAppBar
@@ -59,7 +60,8 @@ class PlashrNavigationSuiteScaffold(
     private val context: Context,
     private val mainViewModel: MainViewModel,
     private val isAppAuthorized: Boolean,
-    private val onSettingsClicked: () -> Unit,
+    private val profileViewModel: ProfileViewModel,
+    private val onSettingsClicked: () -> Unit
 ) {
 
     /**
@@ -69,7 +71,7 @@ class PlashrNavigationSuiteScaffold(
      */
     @Composable
     fun PlashrNavigationWrapperUI(
-        navController: NavHostController
+        navController: NavHostController, profilePictureUrl: String?
     ) {
         var currentDestination by rememberSaveable {mutableStateOf(AppDestinations.HOME)}
         val navSuiteType =
@@ -162,7 +164,9 @@ class PlashrNavigationSuiteScaffold(
                     hideToolbarProfilePicture = hideToolbarProfilePicture,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .shadow(elevation = 0.dp)
+                        .shadow(elevation = 0.dp),
+                    profilePicURL = profilePictureUrl,
+                    profileViewModel = profileViewModel
                 )
             }) {contentPadding ->
                 Box(
@@ -172,17 +176,14 @@ class PlashrNavigationSuiteScaffold(
                 ) {
                     when (currentDestination) {
                         AppDestinations.HOME -> {
-                            Log.i("PlashrNavigationWrapperUI", "Home Screen")
                             HomeScreen()
                         }
 
                         AppDestinations.SEARCH -> {
-                            Log.i("PlashrNavigationWrapperUI", "Search Screen")
                             SearchScreen()
                         }
 
                         AppDestinations.COLLECTIONS -> {
-                            Log.i("PlashrNavigationWrapperUI", "Collections Screen")
                             CollectionsScreen()
                         }
                     }
