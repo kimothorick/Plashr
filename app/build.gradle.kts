@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -5,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.dagger.hilt)
     id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -17,6 +20,26 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        manifestPlaceholders["appAuthRedirectScheme"] = "plashr://callback"
+
+        val apikeyPropertiesFile = project.rootProject.file("apikey.properties")
+        val apikeyProperties = Properties()
+        apikeyProperties.load(apikeyPropertiesFile.inputStream())
+
+        val client_id = apikeyProperties.getProperty("client_id")
+        val client_secret = apikeyProperties.getProperty("client_secret")
+        val redirect_uri = apikeyProperties.getProperty("callback_url")
+
+        buildConfigField(
+            type = "String", name = "client_id", value = client_id
+        )
+        buildConfigField(
+            type = "String", name = "client_secret", value = client_secret
+        )
+        buildConfigField(
+            type = "String", name = "redirect_uri", value = redirect_uri
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -41,6 +64,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -91,5 +115,12 @@ dependencies {
     /*Hilt*/
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-
+    /*Retrofit */
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit.kotlin.coroutine.adapter)
+    /*Coil*/
+    implementation(libs.coil.compose)
+    /*App Auth*/
+    implementation(libs.appauth)
 }

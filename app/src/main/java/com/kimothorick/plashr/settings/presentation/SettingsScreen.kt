@@ -1,6 +1,6 @@
 package com.kimothorick.plashr.settings.presentation
 
-import android.util.Log
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +24,8 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -31,8 +33,10 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +52,7 @@ import com.kimothorick.plashr.settings.data.SettingOption
 import com.kimothorick.plashr.settings.domain.SettingsDataStore
 import com.kimothorick.plashr.settings.domain.SettingsViewModel
 import com.kimothorick.plashr.settings.presentation.components.SettingsCategory
+import kotlinx.coroutines.launch
 
 /**
  * Composable function that displays the Settings screen of the application.
@@ -61,10 +66,12 @@ import com.kimothorick.plashr.settings.presentation.components.SettingsCategory
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(navController: NavController, settingsViewModel: SettingsViewModel) {
+fun SettingsScreen(
+    navController: NavController, settingsViewModel: SettingsViewModel, context: Context
+) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    var showDialog by remember { mutableStateOf<SettingDialogData?>(null) }
+    var showDialog by remember {mutableStateOf<SettingDialogData?>(null)}
     var selectedTheme by remember {
         mutableStateOf("")
     }
@@ -74,23 +81,30 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
     var selectedDownloadQuality by remember {
         mutableStateOf("")
     }
+
+    var cacheSize by remember {
+        mutableDoubleStateOf(settingsViewModel.getCacheSizeInMB(context.cacheDir))
+    }
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember {SnackbarHostState()}
+
     LaunchedEffect(Unit) {
-        settingsViewModel.appTheme.collect { theme ->
+        settingsViewModel.appTheme.collect {theme ->
             selectedTheme = theme
         }
     }
     LaunchedEffect(Unit) {
-        settingsViewModel.photoLayout.collect { layout ->
+        settingsViewModel.photoLayout.collect {layout ->
             selectedLayout = layout
         }
     }
     LaunchedEffect(Unit) {
-        settingsViewModel.downloadQuality.collect { downloadQuality ->
+        settingsViewModel.downloadQuality.collect {downloadQuality ->
             selectedDownloadQuality = downloadQuality
         }
     }
     // Centralized function to handle setting clicks
-    val handleSettingClick: (SettingOption) -> Unit = { option ->
+    val handleSettingClick: (SettingOption) -> Unit = {option ->
         when (option.action) {
             SettingAction.OpenThemeDialog -> {
                 val themeOptions = SettingsDataStore.themeOptions
@@ -98,7 +112,7 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
                 showDialog = SettingDialogData(title = "Choose app theme",
                     options = themeOptions,
                     initialSelectedIndex = currentThemeIndex,
-                    onOptionSelected = { selectedIndex ->
+                    onOptionSelected = {selectedIndex ->
                         settingsViewModel.setAppTheme(themeOptions[selectedIndex])
                     })
             }
@@ -109,7 +123,7 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
                 showDialog = SettingDialogData(title = "Photo layout",
                     options = layoutOptions,
                     initialSelectedIndex = currentLayoutIndex,
-                    onOptionSelected = { selectedIndex ->
+                    onOptionSelected = {selectedIndex ->
                         settingsViewModel.setPhotoLayout(layoutOptions[selectedIndex])
                     })
             }
@@ -121,13 +135,17 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
                 showDialog = SettingDialogData(title = "Download quality",
                     options = downloadQualityOptions,
                     initialSelectedIndex = currentDownloadQualityIndex,
-                    onOptionSelected = { selectedIndex ->
+                    onOptionSelected = {selectedIndex ->
                         settingsViewModel.setDownloadQuality(downloadQualityOptions[selectedIndex])
                     })
             }
 
             SettingAction.ClearCache -> {
-                // Perform cache clearing logic
+                settingsViewModel.clearCache(context.cacheDir)
+                cacheSize = settingsViewModel.getCacheSizeInMB(context.cacheDir)
+                scope.launch {
+                    snackbarHostState.showSnackbar("Cache cleared!")
+                }
             }
 
             SettingAction.NavigateToOtherScreen -> {
@@ -166,18 +184,14 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
                     action = SettingAction.OpenDownloadQualityDialog
                 ), SettingOption(
                     // Clear cache setting
-                    "Clear cache", "Cache size: 130MB", action = SettingAction.ClearCache
+                    "Clear cache", "Cache size: ${cacheSize}MB", action = SettingAction.ClearCache
                 )
             )
         ), SettingCategory(
             "Other", listOf(
                 SettingOption(
                     // Privacy setting (placeholder)
-                    "Privacy",
-                    null,
-                    Icons.Outlined.GppMaybe,
-                    "Privacy policy icon",
-                    action = SettingAction.ClearCache
+                    "Privacy", null, Icons.Outlined.GppMaybe, "Privacy policy icon"
                 ), SettingOption(
                     // App info setting with navigation to another screen
                     "App Info",
@@ -190,11 +204,10 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
         )
     )
     // Scaffold for basic app layout
-    Scaffold(topBar = {
+    Scaffold(snackbarHost = {SnackbarHost(hostState = snackbarHostState)}, topBar = {
         // Top app bar with title and back navigation
         LargeTopAppBar(title = {
             Text(text = "Settings")
-
         }, navigationIcon = {
             IconButton(onClick = {
                 navController.popBackStack()
@@ -210,34 +223,32 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
             scrolledContainerColor = MaterialTheme.colorScheme.surface
         )
         )
-    }) { innerPadding ->
+    }) {innerPadding ->
         // LazyColumn to display setting categories
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
-            items(settingCategories) { category ->
+            items(settingCategories) {category ->
                 SettingsCategory(category = category, handleSettingClick)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
-// Show option dialog if showDialog state is not null
-    showDialog?.let { dialogData ->
+    // Show option dialog if showDialog state is not null
+    showDialog?.let {dialogData ->
         OptionsDialog(title = dialogData.title,
             options = dialogData.options,
-            onOptionSelected = { selectedIndex ->
+            onOptionSelected = {selectedIndex ->
                 dialogData.onOptionSelected(selectedIndex)
             },
             initialSelectedIndex = dialogData.initialSelectedIndex,
 
             onConfirmation = {
-                Log.i("SettingsScreen", "Theme changed to: ${dialogData.onOptionSelected}")
                 showDialog = null
-                // Hide dialog after confirmation
             },
-            onDismissRequest = { showDialog = null } // Close on dismiss
+            onDismissRequest = {showDialog = null} // Close on dismiss
         )
     }
 }
@@ -251,7 +262,6 @@ fun SettingsScreen(navController: NavController, settingsViewModel: SettingsView
  * @param onOptionSelected Callback invoked when an option is selected, providing the index of the selected option.
  * @param onConfirmation Callback invoked when the "Apply" button is clicked.
  * @param onDismissRequest Callback invoked when the dialog is dismissed.
- *
  */
 @Composable
 fun OptionsDialog(
@@ -262,7 +272,7 @@ fun OptionsDialog(
     onConfirmation: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    var selectedIndex by remember { mutableStateOf(initialSelectedIndex) }
+    var selectedIndex by remember {mutableStateOf(initialSelectedIndex)}
     AlertDialog(onDismissRequest = onDismissRequest, title = {
         Text(
             text = title,
@@ -272,7 +282,7 @@ fun OptionsDialog(
         )
     }, text = {
         Column {
-            options.forEachIndexed { index, option ->
+            options.forEachIndexed {index, option ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -281,7 +291,7 @@ fun OptionsDialog(
                         }, verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(selected = selectedIndex == index,
-                        onClick = { selectedIndex = index })
+                        onClick = {selectedIndex = index})
                     Text(
                         text = option,
                         style = MaterialTheme.typography.bodyLarge,
@@ -305,3 +315,4 @@ fun OptionsDialog(
         }
     })
 }
+

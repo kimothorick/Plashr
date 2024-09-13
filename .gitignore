@@ -34,3 +34,8 @@ google-services.json
 
 # .DS_Store (Mac folder settings, not needed for version control)
 .DS_Store
+
+# API key file
+apikey.properties
+
+./gradle.properties
