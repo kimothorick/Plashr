@@ -1,15 +1,16 @@
 package com.kimothorick.plashr
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.PermMedia
@@ -31,14 +32,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.kimothorick.plashr.collections.presentation.CollectionsScreen
 import com.kimothorick.plashr.home.presentation.HomeScreen
 import com.kimothorick.plashr.profile.domain.ProfileViewModel
@@ -49,12 +54,12 @@ import com.kimothorick.plashr.ui.PlashrMainScreenLargeTopAppBar
 /**
  * A class that provides scaffolding for the Plashr navigation suite.
  *
- * This class encapsulates the navigation UI components and providesa wrapper function to create the main navigation UI.
+ * This class encapsulates the navigation UI components and provides a wrapper function to create the main navigation UI.
  *
  * @param context The application context.
  * @param mainViewModel The MainViewModel providing data and functionality.
  * @param isAppAuthorized A boolean flag indicating whether the user is authorized.
- * @param onSettingsClicked A lambda function to becalled when the settings icon is clicked.
+ * @param onSettingsClicked A lambda function to be called when the settings icon is clicked.
  */
 class PlashrNavigationSuiteScaffold(
     private val context: Context,
@@ -77,6 +82,7 @@ class PlashrNavigationSuiteScaffold(
         val navSuiteType =
             NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo())
         var hideToolbarProfilePicture = navSuiteType == NavigationSuiteType.NavigationBar
+        var showManageAccountBottomSheet by remember {mutableStateOf(false)}
 
         LaunchedEffect(navController) {
             navController.currentBackStackEntryFlow.collect {entry ->
@@ -86,16 +92,46 @@ class PlashrNavigationSuiteScaffold(
             }
         }
 
+           if (showManageAccountBottomSheet) {
+               ProfileComponents().ManageAccountBottomSheet(
+                   showBottomSheet = showManageAccountBottomSheet,
+                   onDismiss = {showManageAccountBottomSheet = false},
+                   logout = {profileViewModel.logout()},
+                   mainViewModel = mainViewModel,
+                   profileViewModel = profileViewModel
+               )
+           }
+
         NavigationSuiteScaffoldLayout(navigationSuite = {
             when (navSuiteType) {
                 NavigationSuiteType.NavigationRail -> {
                     hideToolbarProfilePicture = true
                     NavigationRail(header = {
-                        ProfileComponents().ProfilePictureIcon(modifier = Modifier
-                            .clickable {
-                                mainViewModel._showLoginBottomSheet.value = true
-                            }
-                            .padding(top = 8.dp), profilePictureSize = 36)
+                        if (isAppAuthorized) {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(MaterialTheme.shapes.extraLarge)
+                                    .pointerInput(Unit) {
+                                        detectTapGestures(onLongPress = {
+                                            showManageAccountBottomSheet = true
+                                        })
+                                    },
+                                model = profilePictureUrl,
+                                contentDescription = null,
+                            )
+
+                        } else {
+                            ProfileComponents().ProfilePictureIcon(
+                                modifier = Modifier
+                                    .padding(top = 8.dp)
+                                    .clickable {
+                                        mainViewModel.checkAndShowLoginBottomSheet(
+                                            false
+                                        )
+                                    }, profilePictureSize = 36
+                            )
+                        }
                     }) {
                         Spacer(Modifier.weight(1f))
                         AppDestinations.entries.forEach {destination ->
@@ -190,6 +226,7 @@ class PlashrNavigationSuiteScaffold(
                 }
             }
         }
+
     }
 }
 
