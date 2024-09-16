@@ -104,10 +104,9 @@ fun MainScreen(
 
     if (showManageAccountBottomSheet) {
         ProfileComponents().ManageAccountBottomSheet(
-            showBottomSheet =true,
+            showBottomSheet = true,
             onDismiss = {mainViewModel._showManageAccountBottomSheet.value = false},
-            logout = {
-            },
+            logout = {},
             mainViewModel = mainViewModel,
             profileViewModel = profileViewModel
         )
@@ -171,9 +170,10 @@ fun PlashrMainScreenLargeTopAppBar(
         }, navigationIcon = {
             if (!hideToolbarProfilePicture) {
                 IconButton(onClick = {
-                     if (mainViewModel.loginState.value == LoginState.Initial && !isAppAuthorized) mainViewModel.checkAndShowLoginBottomSheet(
-                        isAppAuthorized
-                    )
+                    if (mainViewModel.loginState.value == LoginState.Initial && !isAppAuthorized)
+                        mainViewModel.checkAndShowLoginBottomSheet(
+                            isAppAuthorized
+                        )
                 }) {
                     if (isAppAuthorized) {
                         AsyncImage(
@@ -206,12 +206,12 @@ fun PlashrMainScreenLargeTopAppBar(
                     contentDescription = "Localized description"
                 )
             }
-            CascadeDropdownMenu(expanded = isMenuVisible,
+            CascadeDropdownMenu(
+                expanded = isMenuVisible,
                 onDismissRequest = {isMenuVisible = false}) {
                 DropdownMenuItem(modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerLow),
                     text = {Text(text = "Filter")},
-                    onClick = {
-                    })
+                    onClick = {})
                 DropdownMenuItem(modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerLow),
                     text = {Text("Settings")},
                     onClick = {
