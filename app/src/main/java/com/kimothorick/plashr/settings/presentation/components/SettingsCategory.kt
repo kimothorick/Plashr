@@ -1,5 +1,6 @@
 package com.kimothorick.plashr.settings.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +22,7 @@ import com.kimothorick.plashr.settings.data.SettingOption
  */
 @Composable
 fun SettingsCategory(category: SettingCategory, onSettingClick: (SettingOption) -> Unit) {
-    Column {
+    Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
         // Display the category title if it's not null
         category.title?.let {
             Text(

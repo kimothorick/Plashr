@@ -48,7 +48,7 @@ import me.saket.cascade.CascadeDropdownMenu
 /**
  * The main screen of the application.
  *
- * This composable displays the main content of the app, including a navigation scaffoldand bottom sheets for login and account management.
+ * This composable displays the main content of the app, including a navigation scaffold and bottom sheets for login and account management.
  * It handles user authentication status and displays the appropriate UI elements based on whether the user is logged in or not.
  *
  * @param mainViewModel The [MainViewModel] providing data and functionality for the screen.
@@ -63,7 +63,7 @@ fun MainScreen(
     profileViewModel: ProfileViewModel,
     context: Context,
     onSettingsClicked: () -> Unit,
-    mainActivity: MainActivity
+    mainActivity: MainActivity,
 ) {
     val navController = rememberNavController()
     val isAppAuthorized by profileViewModel.isAppAuthorized.collectAsState()
@@ -92,7 +92,7 @@ fun MainScreen(
     // Show the login bottom sheet if necessary
     if (showLoginBottomSheet) {
         ProfileComponents().LoginBottomSheet(
-            showBottomSheet = showLoginBottomSheet,
+            showBottomSheet = true,
             onDismiss = {mainViewModel._showLoginBottomSheet.value = false},
             continueWithUnsplash = {
                 mainViewModel.startLogin()
@@ -139,11 +139,10 @@ fun PlashrMainScreenLargeTopAppBar(
     onSettingsClicked: () -> Unit,
     profileViewModel: ProfileViewModel,
     profilePicURL: String?,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    val toolbarBackgroundColor = MaterialTheme.colorScheme.surface
     var collapsedFraction by remember {mutableFloatStateOf(0f)}
     var isMenuVisible by rememberSaveable {mutableStateOf(false)}
     var showManageAccountBottomSheet by remember {mutableStateOf(false)}
@@ -153,7 +152,7 @@ fun PlashrMainScreenLargeTopAppBar(
     }
 
     Surface(
-        color = toolbarBackgroundColor,
+        color = MaterialTheme.colorScheme.background,
         modifier = Modifier
             .wrapContentHeight() // Wrap the height of the content
             .nestedScroll(scrollBehavior.nestedScrollConnection) // Add nested scroll behavior
@@ -170,10 +169,9 @@ fun PlashrMainScreenLargeTopAppBar(
         }, navigationIcon = {
             if (!hideToolbarProfilePicture) {
                 IconButton(onClick = {
-                    if (mainViewModel.loginState.value == LoginState.Initial && !isAppAuthorized)
-                        mainViewModel.checkAndShowLoginBottomSheet(
-                            isAppAuthorized
-                        )
+                    if (mainViewModel.loginState.value == LoginState.Initial && !isAppAuthorized) mainViewModel.checkAndShowLoginBottomSheet(
+                        false
+                    )
                 }) {
                     if (isAppAuthorized) {
                         AsyncImage(
@@ -206,8 +204,7 @@ fun PlashrMainScreenLargeTopAppBar(
                     contentDescription = "Localized description"
                 )
             }
-            CascadeDropdownMenu(
-                expanded = isMenuVisible,
+            CascadeDropdownMenu(expanded = isMenuVisible,
                 onDismissRequest = {isMenuVisible = false}) {
                 DropdownMenuItem(modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerLow),
                     text = {Text(text = "Filter")},
@@ -220,9 +217,9 @@ fun PlashrMainScreenLargeTopAppBar(
                     })
             }
         }, scrollBehavior = scrollBehavior, colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.background,
             titleContentColor = MaterialTheme.colorScheme.primary,
-            scrolledContainerColor = MaterialTheme.colorScheme.surface
+            scrolledContainerColor = MaterialTheme.colorScheme.background
         ), modifier = modifier
             .wrapContentHeight() // Wrap the height of the content
             .nestedScroll(scrollBehavior.nestedScrollConnection) // Add nested scroll behavior directly to LargeTopAppBar

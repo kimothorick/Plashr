@@ -217,9 +217,9 @@ fun SettingsScreen(
                 )
             }
         }, scrollBehavior = scrollBehavior, colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.background,
             titleContentColor = MaterialTheme.colorScheme.primary,
-            scrolledContainerColor = MaterialTheme.colorScheme.surface
+            scrolledContainerColor = MaterialTheme.colorScheme.background
         )
         )
     }) {innerPadding ->

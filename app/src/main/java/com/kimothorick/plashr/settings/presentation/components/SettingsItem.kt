@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.kimothorick.plashr.settings.data.SettingOption
 
@@ -22,11 +24,13 @@ import com.kimothorick.plashr.settings.data.SettingOption
  * It handles clicks on the item by invoking the provided `onClick` lambda function.
  *
  * @param option The [SettingOption] object representing the setting to display.
- * @param onClick A lambda function that is invoked when the setting item is clicked, passing theclicked [SettingOption] as an argument.
+ * @param onClick A lambda function that is invoked when the setting item is clicked, passing the clicked [SettingOption] as an argument.
  */
 @Composable
 fun SettingItem(option: SettingOption, onClick: (SettingOption) -> Unit) {
-    ListItem(modifier = Modifier.clickable {onClick(option)}, headlineContent = {
+    ListItem(modifier = Modifier.clickable {onClick(option)}, colors = ListItemDefaults.colors(
+        containerColor = MaterialTheme.colorScheme.background
+    ), headlineContent = {
         Text(
             text = option.title, style = MaterialTheme.typography.titleSmall
         )
@@ -39,8 +43,9 @@ fun SettingItem(option: SettingOption, onClick: (SettingOption) -> Unit) {
                 )
             } else {
                 // Assuming option.icon is a Drawable resource ID
-                val bitmap = LocalContext.current.resources.getDrawable(option.icon as Int, null)
-                    ?.toBitmap()
+                val bitmap = ResourcesCompat.getDrawable(
+                    LocalContext.current.resources, option.icon as Int, null
+                )?.toBitmap()
                 if (bitmap != null) {
                     Image(
                         bitmap = bitmap.asImageBitmap(),
