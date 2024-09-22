@@ -1,11 +1,7 @@
 package com.kimothorick.plashr
 
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.window.core.layout.WindowWidthSizeClass
-import com.kimothorick.plashr.data.remote.UnsplashAPI
-import com.kimothorick.plashr.navgraphs.MainScreen
 import com.kimothorick.plashr.profile.presentation.components.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -119,6 +115,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
     fun loginFailed() {
         _loginState.value = LoginState.LoginFailed
     }
+
 
 
 }

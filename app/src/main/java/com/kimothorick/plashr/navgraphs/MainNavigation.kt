@@ -9,8 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kimothorick.plashr.MainActivity
 import com.kimothorick.plashr.MainViewModel
-import com.kimothorick.plashr.profile.domain.ProfileViewModel
-import com.kimothorick.plashr.settings.domain.SettingsViewModel
+import com.kimothorick.plashr.profile.presentation.ProfileViewModel
+import com.kimothorick.plashr.settings.presentation.SettingsViewModel
 import com.kimothorick.plashr.settings.presentation.AppInfoScreen
 import com.kimothorick.plashr.settings.presentation.SettingsScreen
 import com.kimothorick.plashr.ui.MainScreen

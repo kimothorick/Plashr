@@ -1,7 +1,8 @@
-package com.kimothorick.plashr.profile.domain
+package com.kimothorick.plashr.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kimothorick.plashr.profile.domain.ProfileDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -139,7 +140,7 @@ class ProfileViewModel @Inject constructor(private val profileDataStore: Profile
      * @param username The username of the user.
      * @param firstName The first name of the user.
      * @param lastName The last name of the user.
-     * @param profilePictureUrlThe URL of the user's profile picture.
+     * @param profilePictureUrl The URL of the user's profile picture.
      */
     suspend fun addUserDetails(
         userID: String,

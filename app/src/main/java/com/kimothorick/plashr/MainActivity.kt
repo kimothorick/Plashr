@@ -2,7 +2,6 @@ package com.kimothorick.plashr
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,17 +9,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
-import com.kimothorick.plashr.data.remote.UnsplashAPI
+import com.kimothorick.plashr.data.remote.UserDataService
 import com.kimothorick.plashr.navgraphs.MainNavigation
-import com.kimothorick.plashr.profile.domain.ProfileViewModel
-import com.kimothorick.plashr.settings.domain.SettingsViewModel
+import com.kimothorick.plashr.profile.presentation.ProfileViewModel
+import com.kimothorick.plashr.settings.presentation.SettingsViewModel
 import com.kimothorick.plashr.ui.theme.PlashrTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -43,7 +41,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var unsplashAPI: UnsplashAPI
+    lateinit var userDataService: UserDataService
     private val mainViewModel: MainViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
@@ -144,7 +142,7 @@ class MainActivity : ComponentActivity() {
     /**
      * Initiates the Unsplash authentication flow.
      *
-     * This function creates an authorization request and launches an intent to start the authentication processwith Unsplash.
+     * This function creates an authorization request and launches an intent to start the authentication process with Unsplash.
      */
     fun unsplashAuth() {
         val authConfig = AuthorizationServiceConfiguration(
@@ -186,14 +184,14 @@ class MainActivity : ComponentActivity() {
      * @param username The username of the logged-in user.
      */
     private suspend fun getLoggedUserProfile(username: String) {
-        val response = unsplashAPI.getLoggedUserPublicProfile(username)
+        val response = userDataService.getUserPublicProfile(username)
         if (response.isSuccessful) {
             profileViewModel.addUserDetails(
                 userID = response.body()!!.id,
-                username = response.body()!!.username,
-                firstName = response.body()!!.first_name,
-                lastName = response.body()!!.last_name,
-                profilePictureUrl = response.body()!!.profile_image.large
+                username = response.body()!!.username!!,
+                firstName = response.body()!!.first_name!!,
+                lastName = response.body()!!.last_name!!,
+                profilePictureUrl = response.body()!!.profile_image!!.large!!
             )
 
             profileViewModel.areAllFieldsPopulated.collect {allFieldsPopulated ->

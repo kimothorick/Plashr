@@ -46,7 +46,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.kimothorick.plashr.collections.presentation.CollectionsScreen
 import com.kimothorick.plashr.home.presentation.HomeScreen
-import com.kimothorick.plashr.profile.domain.ProfileViewModel
+import com.kimothorick.plashr.profile.presentation.ProfileViewModel
 import com.kimothorick.plashr.profile.presentation.components.ProfileComponents
 import com.kimothorick.plashr.search.presentation.SearchScreen
 import com.kimothorick.plashr.ui.PlashrMainScreenLargeTopAppBar

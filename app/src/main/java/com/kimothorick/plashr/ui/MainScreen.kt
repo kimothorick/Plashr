@@ -40,7 +40,7 @@ import coil.compose.AsyncImage
 import com.kimothorick.plashr.MainActivity
 import com.kimothorick.plashr.MainViewModel
 import com.kimothorick.plashr.PlashrNavigationSuiteScaffold
-import com.kimothorick.plashr.profile.domain.ProfileViewModel
+import com.kimothorick.plashr.profile.presentation.ProfileViewModel
 import com.kimothorick.plashr.profile.presentation.components.LoginState
 import com.kimothorick.plashr.profile.presentation.components.ProfileComponents
 import me.saket.cascade.CascadeDropdownMenu

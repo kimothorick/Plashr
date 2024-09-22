@@ -50,7 +50,6 @@ import com.kimothorick.plashr.settings.data.SettingCategory
 import com.kimothorick.plashr.settings.data.SettingDialogData
 import com.kimothorick.plashr.settings.data.SettingOption
 import com.kimothorick.plashr.settings.domain.SettingsDataStore
-import com.kimothorick.plashr.settings.domain.SettingsViewModel
 import com.kimothorick.plashr.settings.presentation.components.SettingsCategory
 import kotlinx.coroutines.launch
 

@@ -1,7 +1,8 @@
-package com.kimothorick.plashr.settings.domain
+package com.kimothorick.plashr.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kimothorick.plashr.settings.domain.SettingsDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File

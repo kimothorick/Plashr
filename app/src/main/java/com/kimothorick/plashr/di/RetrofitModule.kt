@@ -1,8 +1,7 @@
 package com.kimothorick.plashr.di
 
-import com.kimothorick.plashr.data.remote.UnsplashAPI
 import com.kimothorick.plashr.profile.domain.ProfileDataStore
-import com.kimothorick.plashr.profile.remote.UserDataService
+import com.kimothorick.plashr.data.remote.UserDataService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -68,17 +67,6 @@ object RetrofitModule {
     fun provideRetrofit(baseURL: String, okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder().baseUrl(baseURL).client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create()).build()
-
-    /**
-     * Provides an instance of [UnsplashAPI].
-     *
-     * @param retrofit The Retrofit instance used to create the API service.
-     * @return An instance of [UnsplashAPI].
-     * */
-    @Provides
-    @Singleton
-    fun provideUnsplashAPI(retrofit: Retrofit): UnsplashAPI =
-        retrofit.create(UnsplashAPI::class.java)
 
     /**
      * Provides an instance of [UserDataService].
