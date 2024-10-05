@@ -1,6 +1,9 @@
 package com.kimothorick.plashr.di
 
 import android.content.Context
+import com.kimothorick.plashr.StartupDataRepository
+import com.kimothorick.plashr.data.remote.PhotoDataService
+import com.kimothorick.plashr.home.domain.PhotosPagingSource
 import com.kimothorick.plashr.profile.domain.ProfileDataStore
 import com.kimothorick.plashr.settings.domain.SettingsDataStore
 import dagger.Module
@@ -42,4 +45,5 @@ object DataStoreModule {
     fun provideProfileDataStore(@ApplicationContext context: Context): ProfileDataStore {
         return ProfileDataStore(context)
     }
+
 }

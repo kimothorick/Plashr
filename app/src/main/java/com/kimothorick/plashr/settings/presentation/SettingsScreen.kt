@@ -41,8 +41,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.kimothorick.plashr.navgraphs.AppInfo
 import com.kimothorick.plashr.settings.data.SettingAction
@@ -66,8 +68,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    navController: NavController, settingsViewModel: SettingsViewModel, context: Context
+    navController: NavController,
+    settingsViewModel: SettingsViewModel = viewModel(),
 ) {
+    val context = LocalContext.current
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     var showDialog by remember {mutableStateOf<SettingDialogData?>(null)}
@@ -269,7 +273,7 @@ fun OptionsDialog(
     initialSelectedIndex: Int?,
     onOptionSelected: (Int) -> Unit,
     onConfirmation: () -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
     var selectedIndex by remember {mutableStateOf(initialSelectedIndex)}
     AlertDialog(onDismissRequest = onDismissRequest, title = {
@@ -289,7 +293,8 @@ fun OptionsDialog(
                             selectedIndex = index
                         }, verticalAlignment = Alignment.CenterVertically
                 ) {
-                    RadioButton(selected = selectedIndex == index,
+                    RadioButton(
+                        selected = selectedIndex == index,
                         onClick = {selectedIndex = index})
                     Text(
                         text = option,

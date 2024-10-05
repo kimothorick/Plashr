@@ -1,7 +1,10 @@
 package com.kimothorick.plashr.data.models.user
 
-import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+val User.profile_share_url: String
+    get() = "${links!!.html}?utm_source=plashr_app&utm_medium=referral"
 
 @Parcelize
 data class User(
@@ -27,20 +30,21 @@ data class User(
     val profile_image: ProfileImage?,
     val badge: Badge?,
     val links: Links?,
-    val tags: UserTags?
+    val tags: UserTags?,
 ) : Parcelable {
+
     @Parcelize
     data class Social(
         val instagram_username: String?,
         val portfolio_url: String?,
-        val twitter_username: String?
+        val twitter_username: String?,
     ) : Parcelable
 
     @Parcelize
     data class ProfileImage(
         val small: String?,
         val medium: String?,
-        val large: String?
+        val large: String?,
     ) : Parcelable
 
     @Parcelize
@@ -48,7 +52,7 @@ data class User(
         val title: String?,
         val primary: Boolean?,
         val slug: String?,
-        val link: String?
+        val link: String?,
     ) : Parcelable
 
     @Parcelize
@@ -57,17 +61,17 @@ data class User(
         val html: String?,
         val photos: String?,
         val likes: String?,
-        val portfolio: String?
+        val portfolio: String?,
     ) : Parcelable
 
     @Parcelize
     data class UserTags(
-        val custom: List<UserCustomTag>
-    ) : Parcelable{
+        val custom: List<UserCustomTag>,
+    ) : Parcelable {
         @Parcelize
         data class UserCustomTag(
             val type: String?,
-            val title: String?
+            val title: String?,
         ) : Parcelable
     }
 }

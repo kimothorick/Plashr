@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kimothorick.plashr.MainActivity
 import com.kimothorick.plashr.MainViewModel
+import com.kimothorick.plashr.home.presentation.HomeViewModel
 import com.kimothorick.plashr.profile.presentation.ProfileViewModel
 import com.kimothorick.plashr.settings.presentation.SettingsViewModel
 import com.kimothorick.plashr.settings.presentation.AppInfoScreen
@@ -47,12 +49,11 @@ fun MainNavigation(
     navController: NavHostController,
     viewModel: MainViewModel,
     profileViewModel: ProfileViewModel,
-    context: Context,
     settingsViewModel: SettingsViewModel,
-    mainActivity: MainActivity
+    mainActivity: MainActivity,
+    homeViewModel: HomeViewModel,
 ) {
     NavHost(navController = navController, startDestination = MainScreen) {
-
         // Main Screen Route
         composable<MainScreen>(popEnterTransition = {
             slideIntoContainer(
@@ -63,12 +64,16 @@ fun MainNavigation(
                 AnimatedContentTransitionScope.SlideDirection.Left, tween(300)
             )
         }) {
-            MainScreen(mainViewModel = viewModel,
-                profileViewModel = profileViewModel,
-                context = context,
+            MainScreen(
                 onSettingsClicked = {
-                    navController.navigate(route = Settings)
-                },mainActivity = mainActivity)
+
+                },
+                navController = navController,
+                settingsViewModel = settingsViewModel,
+                profileViewModel = profileViewModel,
+                mainViewModel = viewModel,
+                homeViewModel = homeViewModel
+            )
         }
 
         // Settings Screen Route
@@ -88,7 +93,7 @@ fun MainNavigation(
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left, tween(300)
             )
-        }) {SettingsScreen(navController, settingsViewModel,context)}
+        }) {SettingsScreen(navController, settingsViewModel)}
 
         // App Info Screen Route
         composable<AppInfo>(enterTransition = {
@@ -99,6 +104,6 @@ fun MainNavigation(
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right, tween(300)
             )
-        }) {AppInfoScreen(navController, context = context)}
+        }) {AppInfoScreen(navController)}
     }
 }

@@ -4,6 +4,9 @@ import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
 import com.kimothorick.plashr.data.models.user.User
 
+
+val Photo.sharedLink: String
+    get() = "${links?.html}?utm_source=plashr_app&utm_medium=referral"
 @Parcelize
 data class Photo(
     val id: String,
@@ -24,8 +27,9 @@ data class Photo(
     val sponsorship: Sponsorship?,
     val urls: Urls?,
     val links: Links?,
-    val user: User?
+    val user: User?,
 ) : Parcelable {
+
     @Parcelize
     data class Exif(
         val make: String?,
@@ -34,22 +38,22 @@ data class Photo(
         val exposure_time: String?,
         val aperture: String?,
         val focal_length: String?,
-        val iso: Int?
+        val iso: Int?,
     ) : Parcelable
 
     @Parcelize
     data class Location(
-        val city: String?, val country: String?, val position: Position?
+        val city: String?, val country: String?, val position: Position?,
     ) : Parcelable {
         @Parcelize
         data class Position(
-            val latitude: Double?, val longitude: Double?
+            val latitude: Double?, val longitude: Double?,
         ) : Parcelable
     }
 
     @Parcelize
     data class Tag(
-        val title: String?
+        val title: String?,
     ) : Parcelable
 
     @Parcelize
@@ -60,24 +64,28 @@ data class Photo(
         val last_collected_at: String?,
         val updated_at: String?,
         val cover_photo: Photo?,
-        val user: User?
+        val user: User?,
     ) : Parcelable
 
     @Parcelize
     data class Urls(
-        val raw: String?, val full: String?, val regular: String?, val small: String?, val thumb: String?
+        val raw: String?,
+        val full: String?,
+        val regular: String?,
+        val small: String?,
+        val thumb: String?,
     ) : Parcelable
 
     @Parcelize
     data class Links(
-        val self: String?, val html: String?, val download: String?, val download_location: String?
+        val self: String?, val html: String?, val download: String?, val download_location: String?,
     ) : Parcelable
 
     @Parcelize
     data class Sponsorship(
         val tagline: String?,
         val tagline_url: String?,
-        val sponsor: User?
+        val sponsor: User?,
     ) : Parcelable
 
 }

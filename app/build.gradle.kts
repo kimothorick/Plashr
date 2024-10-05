@@ -123,4 +123,16 @@ dependencies {
     implementation(libs.coil.compose)
     /*App Auth*/
     implementation(libs.appauth)
+    /*Paging 3*/
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+    /*Splash screen*/
+    implementation (libs.androidx.core.splashscreen)
+
+
+        implementation (libs.androidx.hilt.navigation.compose)
+
+        implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+
 }

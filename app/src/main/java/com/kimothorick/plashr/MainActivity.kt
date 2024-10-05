@@ -8,14 +8,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.kimothorick.plashr.data.remote.UserDataService
+import com.kimothorick.plashr.home.presentation.HomeViewModel
 import com.kimothorick.plashr.navgraphs.MainNavigation
 import com.kimothorick.plashr.profile.presentation.ProfileViewModel
 import com.kimothorick.plashr.settings.presentation.SettingsViewModel
@@ -45,32 +45,34 @@ class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var authService: AuthorizationService
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         authService = AuthorizationService(this)
+
         setContent {
             val navController = rememberNavController()
-
-            var selectedTheme by remember {
-                mutableStateOf("")
-            }
-            // Collect the app theme setting and update the selectedTheme state.
-            LaunchedEffect(Unit) {
-                settingsViewModel.appTheme.collect {theme ->
-                    selectedTheme = theme
-                }
-            }
+            val selectedTheme by settingsViewModel.appTheme.collectAsState(initial = "System default")
+            val isAppAuthorized by profileViewModel.isAppAuthorized.collectAsState()
+            val showLoginBottomSheet by mainViewModel.showLoginBottomSheet.collectAsState()
+            val showManageAccountBottomSheet by mainViewModel.showManageAccountBottomSheet.collectAsState()
+            val profilePictureUrl by profileViewModel.profilePictureUrl.collectAsStateWithLifecycle(
+                initialValue = null
+            )
 
             // Apply the selected theme to the PlashrTheme composable
             PlashrTheme(
-                darkTheme = when (selectedTheme) {
+                darkTheme =
+                when (selectedTheme) {
                     "Light" -> false
                     "Dark" -> true
                     else -> isSystemInDarkTheme()
                 }
+
             ) {
                 // Set up the main navigation graph.
                 MainNavigation(
@@ -78,9 +80,10 @@ class MainActivity : ComponentActivity() {
                     settingsViewModel = settingsViewModel,
                     profileViewModel = profileViewModel,
                     viewModel = mainViewModel,
-                    context = this,
-                    mainActivity = this
+                    mainActivity = this,
+                    homeViewModel = homeViewModel
                 )
+
 
             }
         }

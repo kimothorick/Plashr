@@ -1,10 +1,15 @@
 package com.kimothorick.plashr.di
 
+import android.content.Context
+import com.kimothorick.plashr.data.remote.PhotoDataService
 import com.kimothorick.plashr.profile.domain.ProfileDataStore
 import com.kimothorick.plashr.data.remote.UserDataService
+import com.kimothorick.plashr.home.domain.PhotosPagingSource
+import com.kimothorick.plashr.settings.domain.SettingsDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -38,7 +43,7 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun provideAuthenticationInterceptor(
-        profileDataStore: ProfileDataStore
+        profileDataStore: ProfileDataStore,
     ): AuthenticationInterceptor {
         return AuthenticationInterceptor(profileDataStore)
     }
@@ -78,4 +83,27 @@ object RetrofitModule {
     @Singleton
     fun provideUserDataService(retrofit: Retrofit): UserDataService =
         retrofit.create(UserDataService::class.java)
+
+    /**
+     * Provides an instance of [PhotoDataService].
+     *
+     * @param retrofit The Retrofit instance used to create the API service.
+     * @return An instance of [PhotoDataService].
+     */
+    @Provides
+    @Singleton
+    fun providePhotosService(retrofit: Retrofit): PhotoDataService =
+        retrofit.create(PhotoDataService::class.java)
+
+
+    @Provides
+    @Singleton
+    fun providePhotosPagingSource(
+        photoDataService: PhotoDataService,
+    ): PhotosPagingSource {
+        return PhotosPagingSource(
+            photoDataService = photoDataService
+        )
+    }
+
 }

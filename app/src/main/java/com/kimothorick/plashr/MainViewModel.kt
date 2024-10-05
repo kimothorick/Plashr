@@ -1,12 +1,17 @@
 package com.kimothorick.plashr
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.kimothorick.plashr.profile.presentation.components.LoginState
+import com.kimothorick.plashr.settings.domain.SettingsDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 /**
@@ -15,7 +20,8 @@ import javax.inject.Inject
  * This ViewModel manages the [NavHostController] and the visibility of the login bottom sheet.
  */
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor() :
+    ViewModel() {
 
     // Private mutable state flow for the NavHostController
     private val _navController = MutableStateFlow<NavHostController?>(null)
@@ -116,6 +122,5 @@ class MainViewModel @Inject constructor() : ViewModel() {
         _loginState.value = LoginState.LoginFailed
     }
 
-
-
 }
+

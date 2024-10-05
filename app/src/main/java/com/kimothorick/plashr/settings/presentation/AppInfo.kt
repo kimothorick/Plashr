@@ -24,6 +24,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -45,7 +46,8 @@ import com.kimothorick.plashr.utils.OpenLink
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppInfoScreen(navController: NavHostController, context: Context) {
+fun AppInfoScreen(navController: NavHostController) {
+    val context = LocalContext.current
     val rickInstagramURL = stringResource(id = R.string.rick_instagram_handle)
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
