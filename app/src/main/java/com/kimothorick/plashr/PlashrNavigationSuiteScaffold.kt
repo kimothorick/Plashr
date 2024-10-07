@@ -36,6 +36,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.kimothorick.plashr.collections.presentation.CollectionsScreen
 import com.kimothorick.plashr.home.presentation.HomeScreen
@@ -71,7 +72,7 @@ class PlashrNavigationSuiteScaffold(
         homeViewModel: HomeViewModel = viewModel(),
         settingsViewModel: SettingsViewModel,
     ) {
-        var currentDestination by rememberSaveable {mutableStateOf(AppDestinations.HOME)}
+        var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
         val adaptiveInfo = currentWindowAdaptiveInfo()
         val navSuiteType =
             NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo = adaptiveInfo)
@@ -96,16 +97,15 @@ class PlashrNavigationSuiteScaffold(
                                 contentDescription = stringResource(it.contentDescription)
                             )
                         },
-                        label = {Text(stringResource(it.label))},
+                        label = { Text(stringResource(it.label)) },
                         selected = it == currentDestination,
-                        onClick = {currentDestination = it}
+                        onClick = { currentDestination = it }
                     )
                 }
             }
         ) {
             val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-            var isMenuVisible by rememberSaveable {mutableStateOf(false)}
-
+            var isMenuVisible by rememberSaveable { mutableStateOf(false) }
             Scaffold(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                 topBar = {
@@ -123,16 +123,16 @@ class PlashrNavigationSuiteScaffold(
                         }
                         CascadeDropdownMenu(
                             expanded = isMenuVisible,
-                            onDismissRequest = {isMenuVisible = false}) {
+                            onDismissRequest = { isMenuVisible = false }) {
                             DropdownMenuItem(modifier = Modifier.background(
                                 MaterialTheme.colorScheme.surfaceContainerLow
                             ),
-                                text = {Text(text = "Filter")},
+                                text = { Text(text = "Filter") },
                                 onClick = {})
                             DropdownMenuItem(modifier = Modifier.background(
                                 MaterialTheme.colorScheme.surfaceContainerLow
                             ),
-                                text = {Text("Settings")},
+                                text = { Text("Settings") },
                                 onClick = {
                                     navController.navigate(route = Settings)
                                     isMenuVisible = false
@@ -146,7 +146,7 @@ class PlashrNavigationSuiteScaffold(
                         ), modifier = Modifier.wrapContentHeight() // Wrap the height of the content
                     )
 
-                }) {contentPadding ->
+                }) { contentPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

@@ -19,14 +19,19 @@ class PhotosPagingSource @Inject constructor(private val photoDataService: Photo
         return try {
             val page = params.key ?: UNSPLASH_STARTING_PAGE_INDEX
             val response = photoDataService.getPhotos(page, params.loadSize)
+            val photos = response.body() // Assign response.body() to a variable
+            Log.i("Network", "load: getting photos: $page")
 
-            Log.i("Network", "load: getting photos")
 
-            LoadResult.Page(
-                data = response.body()!!,
-                prevKey = if (page == UNSPLASH_STARTING_PAGE_INDEX) null else page - 1,
-                nextKey = if (response.body()!!.isEmpty()) null else page + 1
-            )
+            if (photos != null) { // Check if photos is not null
+                LoadResult.Page(
+                    data = photos,
+                    prevKey = if (page == UNSPLASH_STARTING_PAGE_INDEX) null else page - 1,
+                    nextKey = if (photos.isEmpty()) null else page + 1 // Use photos instead of response.body()!!
+                )
+            } else {
+                LoadResult.Error(NullPointerException("Response body is null")) // Return an error if photos is null
+            }
         } catch (exception: IOException) {
             return LoadResult.Error(exception)
         } catch (exception: HttpException) {
@@ -35,8 +40,7 @@ class PhotosPagingSource @Inject constructor(private val photoDataService: Photo
     }
 
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int? {
-        return state.anchorPosition?.let {
-            anchorposition->
+        return state.anchorPosition?.let { anchorposition ->
             state.closestPageToPosition(anchorposition)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(anchorposition)?.nextKey?.minus(1)
         }

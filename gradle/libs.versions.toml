@@ -27,6 +27,7 @@ retrofit = "2.11.0"
 retrofit-kotlin-coroutine-adapter="0.9.2"
 serialization = "1.7.1"
 adaptiveLayout = "1.0.0-rc01"
+pagingComposeAndroid = "3.3.2"
 
 
 [libraries]
@@ -68,6 +69,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 retrofit-kotlin-coroutine-adapter={module= "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter",version.ref="retrofit-kotlin-coroutine-adapter"}
+androidx-paging-compose-android = { group = "androidx.paging", name = "paging-compose-android", version.ref = "pagingComposeAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

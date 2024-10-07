@@ -3,6 +3,7 @@ package com.kimothorick.plashr.di
 import android.content.Context
 import com.kimothorick.plashr.StartupDataRepository
 import com.kimothorick.plashr.data.remote.PhotoDataService
+import com.kimothorick.plashr.home.domain.HomePhotoRepository
 import com.kimothorick.plashr.home.domain.PhotosPagingSource
 import com.kimothorick.plashr.profile.domain.ProfileDataStore
 import com.kimothorick.plashr.settings.domain.SettingsDataStore
@@ -12,6 +13,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+
 /**
  * Hilt module for providing DataStore instances.
  *
@@ -44,6 +46,14 @@ object DataStoreModule {
     @Singleton
     fun provideProfileDataStore(@ApplicationContext context: Context): ProfileDataStore {
         return ProfileDataStore(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHomePhotoRepository(
+        apiService: PhotoDataService
+    ): HomePhotoRepository {
+        return HomePhotoRepository(apiService)
     }
 
 }
