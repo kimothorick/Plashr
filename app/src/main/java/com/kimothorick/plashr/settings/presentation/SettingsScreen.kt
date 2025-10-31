@@ -246,9 +246,7 @@ fun SettingsScreen(
         },
     ) { scaffoldPadding ->
         LazyColumn(
-            modifier = Modifier
-                .padding(scaffoldPadding)
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = Modifier.padding(scaffoldPadding).nestedScroll(scrollBehavior.nestedScrollConnection),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             //region Appearance Settings
@@ -260,18 +258,15 @@ fun SettingsScreen(
                     SubHeader(
                         text = stringResource(R.string.appearance),
                         modifier = Modifier.padding(
-                            start =
-                                8.dp,
+                            start = 8.dp,
                         ),
                     )
                     Column(
                         modifier = Modifier.clip(MaterialTheme.shapes.largeIncreased),
-                        verticalArrangement = Arrangement.spacedBy
-                            (4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         ThemeOptionsSettingsItem(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
                                 .padding(horizontal = 14.dp, vertical = 14.dp),
                             selectedTheme = selectedTheme,
                             dynamicThemeEnabled = dynamicThemeEnabled,
@@ -299,15 +294,13 @@ fun SettingsScreen(
                     SubHeader(
                         text = stringResource(R.string.photos),
                         modifier = Modifier.padding(
-                            start =
-                                8.dp,
+                            start = 8.dp,
                         ),
                     )
 
                     Column(
                         modifier = Modifier.clip(MaterialTheme.shapes.largeIncreased),
-                        verticalArrangement = Arrangement.spacedBy
-                            (4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         LayoutSettingItem(
                             selectedLayout = selectedLayoutLabel,
@@ -335,17 +328,18 @@ fun SettingsScreen(
                     SubHeader(
                         text = stringResource(R.string.support_feedback),
                         modifier = Modifier.padding(
-                            start =
-                                8.dp,
+                            start = 8.dp,
                         ),
                     )
                     Column(
                         modifier = Modifier.clip(MaterialTheme.shapes.largeIncreased),
-                        verticalArrangement = Arrangement.spacedBy
-                            (4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         FeedbackSettingItem(
-                            onFeedback = {},
+                            onFeedback = {
+                                val intent = Intent(Intent.ACTION_VIEW, Constants.PLASHR_GITHUB_ISSUES_URL.toUri())
+                                context.startActivity(intent)
+                            },
                         )
                         RateAppSettingItem(
                             onRateApp = {},
@@ -364,17 +358,18 @@ fun SettingsScreen(
                     SubHeader(
                         text = stringResource(R.string.about_plashr),
                         modifier = Modifier.padding(
-                            start =
-                                8.dp,
+                            start = 8.dp,
                         ),
                     )
                     Column(
                         modifier = Modifier.clip(MaterialTheme.shapes.largeIncreased),
-                        verticalArrangement = Arrangement.spacedBy
-                            (4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         PrivacyPolicySettingItem(
-                            onPrivacyPolicy = {},
+                            onPrivacyPolicy = {
+                                val intent = Intent(Intent.ACTION_VIEW, Constants.PLASHR_GITHUB_PRIVACY_POLICY_URL.toUri())
+                                context.startActivity(intent)
+                            },
                         )
                         AppVersionSettingItem()
                         DeveloperCreditsSettingItem(
@@ -450,11 +445,9 @@ fun OptionsDialog(
             Column {
                 options.forEachIndexed { index, option ->
                     Row(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                selectedIndex = index
-                            },
+                        modifier = modifier.fillMaxWidth().clickable {
+                            selectedIndex = index
+                        },
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
@@ -539,15 +532,11 @@ fun ThemeOptionsSettingsItem(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Row(
-            Modifier
-                .fillMaxWidth()
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = MaterialTheme.shapes.medium,
-                )
-                .height(56.dp)
-                .padding(all = 4.dp),
+            Modifier.fillMaxWidth().border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = MaterialTheme.shapes.medium,
+            ).height(56.dp).padding(all = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
@@ -557,10 +546,7 @@ fun ThemeOptionsSettingsItem(
                     onCheckedChange = {
                         setTheme(themeOptions[index])
                     },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .semantics { role = Role.RadioButton },
+                    modifier = Modifier.weight(1f).fillMaxHeight().semantics { role = Role.RadioButton },
                     shapes = ToggleButtonDefaults.shapes(MaterialTheme.shapes.medium),
                     border = null,
                     colors = toggleButtonColors,
@@ -737,9 +723,7 @@ fun DeveloperCreditsSettingItem(
                 model = Constants.Profile.RICK_PROFILE_PICTURE_URL,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .requiredSize(36.dp)
-                    .clip(MaterialTheme.shapes.extraLarge),
+                modifier = Modifier.requiredSize(36.dp).clip(MaterialTheme.shapes.extraLarge),
             )
         },
         onClick = { onDeveloperCredits() },
@@ -774,10 +758,7 @@ fun AboutDeveloperBottomSheet(
             }
         },
         sheetState = sheetState,
-        modifier = Modifier
-            .padding(end = 8.dp, start = 8.dp)
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .background(Color.Transparent),
+        modifier = Modifier.padding(end = 8.dp, start = 8.dp).windowInsetsPadding(WindowInsets.systemBars).background(Color.Transparent),
         shape = MaterialTheme.shapes.extraLarge,
         sheetMaxWidth = 420.dp,
         properties = ModalBottomSheetProperties(
@@ -800,19 +781,14 @@ fun AboutDeveloperBottomSheet(
 @Composable
 fun AboutDeveloperBottomSheetContent() {
     Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp)
-            .padding(bottom = 16.dp),
+        modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 16.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             AsyncImage(
                 model = Constants.Profile.RICK_PROFILE_PICTURE_URL,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .requiredSize(64.dp)
-                    .clip(CircleShape),
+                modifier = Modifier.requiredSize(64.dp).clip(CircleShape),
             )
             Text(Constants.Profile.RICK_NAME, style = MaterialTheme.typography.titleMedium)
             Text(text = stringResource(R.string.rick_occupation), style = MaterialTheme.typography.titleSmall)
@@ -843,10 +819,7 @@ fun SocialsButton(
     val context = LocalContext.current
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         IconButton(
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.extraLarge)
-                .heightIn(36.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+            modifier = Modifier.clip(MaterialTheme.shapes.extraLarge).heightIn(36.dp).background(MaterialTheme.colorScheme.surfaceVariant),
             onClick = {
                 val intent = Intent(Intent.ACTION_VIEW, socialPlatform.url.toUri())
                 context.startActivity(intent)
@@ -968,15 +941,10 @@ internal fun SettingsListItem(
     itemPadding: PaddingValues = PaddingValues(16.dp, 12.dp, 12.dp, 12.dp),
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.extraSmall)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+        modifier = Modifier.fillMaxWidth().clip(MaterialTheme.shapes.extraSmall).background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable {
                 onClick()
-            }
-            .padding(itemPadding)
-            .then(
+            }.padding(itemPadding).then(
                 modifier,
             ),
         verticalAlignment = Alignment.CenterVertically,
@@ -1129,9 +1097,7 @@ fun SettingsScreenPreview() {
                 },
             ) { innerPadding ->
                 LazyColumn(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .nestedScroll(scrollBehavior.nestedScrollConnection),
+                    modifier = Modifier.padding(innerPadding).nestedScroll(scrollBehavior.nestedScrollConnection),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     item {
@@ -1140,18 +1106,15 @@ fun SettingsScreenPreview() {
                                 text = "Appearance",
                                 style = MaterialTheme.typography.titleMedium,
                                 modifier = Modifier.padding(
-                                    start =
-                                        8.dp,
+                                    start = 8.dp,
                                 ),
                             )
                             Column(
                                 modifier = Modifier.clip(MaterialTheme.shapes.largeIncreased),
-                                verticalArrangement = Arrangement.spacedBy
-                                    (4.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 ThemeOptionsSettingsItem(
-                                    modifier = Modifier
-                                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
                                         .padding(horizontal = 14.dp, vertical = 14.dp),
                                     selectedTheme = "Dark",
                                     dynamicThemeEnabled = true,
@@ -1174,25 +1137,21 @@ fun SettingsScreenPreview() {
                             SubHeader(
                                 text = stringResource(R.string.photos),
                                 modifier = Modifier.padding(
-                                    start =
-                                        8.dp,
+                                    start = 8.dp,
                                 ),
                             )
 
                             Column(
                                 modifier = Modifier.clip(MaterialTheme.shapes.largeIncreased),
-                                verticalArrangement = Arrangement.spacedBy
-                                    (4.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 LayoutSettingItem(
                                     selectedLayout = "List",
-                                    onLayoutSelected = {
-                                    },
+                                    onLayoutSelected = {},
                                 )
                                 ClearCacheSettingItem(
                                     cacheSize = 23.62,
-                                    onClearCache = {
-                                    },
+                                    onClearCache = {},
                                 )
                             }
                         }
@@ -1206,14 +1165,12 @@ fun SettingsScreenPreview() {
                             SubHeader(
                                 text = stringResource(R.string.support_feedback),
                                 modifier = Modifier.padding(
-                                    start =
-                                        8.dp,
+                                    start = 8.dp,
                                 ),
                             )
                             Column(
                                 modifier = Modifier.clip(MaterialTheme.shapes.largeIncreased),
-                                verticalArrangement = Arrangement.spacedBy
-                                    (4.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 FeedbackSettingItem(
                                     onFeedback = {},
@@ -1232,34 +1189,28 @@ fun SettingsScreenPreview() {
                             SubHeader(
                                 text = stringResource(R.string.about_plashr),
                                 modifier = Modifier.padding(
-                                    start =
-                                        8.dp,
+                                    start = 8.dp,
                                 ),
                             )
                             Column(
                                 modifier = Modifier.clip(MaterialTheme.shapes.largeIncreased),
-                                verticalArrangement = Arrangement.spacedBy
-                                    (4.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 PrivacyPolicySettingItem(
                                     onPrivacyPolicy = {},
                                 )
                                 AppVersionSettingItem()
                                 DeveloperCreditsSettingItem(
-                                    onDeveloperCredits = {
-                                    },
+                                    onDeveloperCredits = {},
                                 )
                             }
                         }
                     }
-                    item {
-                    }
+                    item {}
 
-                    item {
-                    }
+                    item {}
 
-                    item {
-                    }
+                    item {}
                 }
             }
         }
