@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="splash_background">#FFFFFF</color>
+    <color name="like_color">#E04C4C</color>
+    <color name="translucent_nav_icon_background">#33000000</color>
+    <color name="collect_green_70">#B32ECC71</color>
+    <color name="collect_green">#2ECC71</color>
+</resources>
