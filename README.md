@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://play.google.com/store/apps/details?id=com.kimothorick.plashr" target="_blank"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" width="200"/></a>
+  <a href="https://play.google.com/store/apps/details?id=com.kimothorick.plashr" target="blank"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" width="200"/></a>
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/Coming%20Soon-424242?style=for-the-badge" alt="Coming Soon">
