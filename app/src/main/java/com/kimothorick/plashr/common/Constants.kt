@@ -25,7 +25,7 @@ internal object Constants {
 
     object Profile {
         const val RICK_PROFILE_PICTURE_URL =
-            "https://gravatar.com/avatar/8b8a63856ab36232cbe94be36567dca681bc043f8528892448cd631dd4ea226?size=256"
+            "https://gravatar.com/avatar/8b8a63856ab36232cbe94be36567dca681bc043f85288292448cd631dd4ea226?size=256"
         const val RICK_NAME = "Rick Kimotho"
         const val RICK_THREADS = "https://www.threads.com/@kimothorick"
         const val RICK_GITHUB = "https://github.com/kimothorick"
@@ -40,6 +40,8 @@ internal object Constants {
 
     const val PLASHR_UNSPLASH_REFERRAL_URL = "https://unsplash.com/?utm_source=plashr_app&utm_medium=referral"
     const val PLASHR_UNSPLASH_PLUS_REFERRAL_URL = "https://unsplash.com/plus/?utm_source=plashr_app&utm_medium=referral"
+    const val PLASHR_GITHUB_ISSUES_URL = "https://github.com/kimothorick/Plashr/issues"
+    const val PLASHR_GITHUB_PRIVACY_POLICY_URL = "https://github.com/kimothorick/Plashr/blob/main/PRIVACY_POLICY.md"
 
     object LayoutValues {
         val MIN_ADAPTIVE_SIZE = 361.dp
